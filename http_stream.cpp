@@ -45,8 +45,13 @@ http_stream::input(const char *buf, int len)
 				m_type = GET;
 			else if (len >= 4 && !strncasecmp("POST", buf, 4))
 				m_type = POST;
-			else
+			else if (len >= 3 && !strncasecmp("PUT", buf, 3))
+				m_type = PUT;
+			else if (len >= 3 && !strncasecmp("DELETE", buf, 6))
+				m_type = DELETE;
+			else {
 				m_type = UNKNOWN;
+			}
 		}
 		for (i = 0; i < len; i++) {
 			if (i + 1 < len) {
@@ -114,9 +119,14 @@ http_stream::is_stream_end(void)
 			printf("Checking for GET\n");
 		return (!m_bInHdr && (!m_ContentLength ||
 			m_ContentRead == m_ContentLength));
-	} else if (m_type == POST) {
+	} else if (m_type == DELETE)  {
+		if (debug)
+			printf("Checking for DELETE\n");
+		return (!m_bInHdr && (!m_ContentLength ||
+			m_ContentRead == m_ContentLength));
+	} else if (m_type == POST || m_type == PUT) {
 		if (debug) {
-			printf("Checking for POST\n");
+			printf("Checking for POST/PUT\n");
 			printf("m_bInHdr %d, m_ContentRead %d,"
 				       " m_ContentLength %d\n", m_bInHdr,
 				       m_ContentRead, m_ContentLength);

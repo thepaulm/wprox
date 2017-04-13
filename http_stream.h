@@ -2,7 +2,7 @@
 #define _HTTP_STREAM_H
 
 enum http_type {
-	NONE, GET, POST, UNKNOWN
+	NONE, GET, POST, PUT, DELETE, UNKNOWN
 };
 
 class http_stream
